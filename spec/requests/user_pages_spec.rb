@@ -30,17 +30,17 @@ describe "User pages" do
     describe "delete links" do
       it { should_not have_link('delete') }
 
-       describe "as an admin uesr" do
-        let(:admin) { FactoryGirl.create(:admin) }
-        before do
-          sign_in admin
-          visit users_path
-        end
+        describe "as an admin uesr" do
+         let(:admin) { FactoryGirl.create(:admin) }
+         before do
+           sign_in admin
+           visit users_path
+         end
 
-        it { should have_link('delete', href: user_path(User.first)) }
-        it { should_not have_link('delete', href: user_path(:admin)) }
-        it "should be able to delete another user" do
-          expect { click_link('delete')}.to change(User, :count).by(-1)
+         it { should have_link('delete', href: user_path(User.first)) }
+         it { should_not have_link('delete', href: user_path(:admin)) }
+         it "should be able to delete another user" do
+           expect { click_link('delete')}.to change(User, :count).by(-1)
         end
       end
 
@@ -55,13 +55,12 @@ describe "User pages" do
         end
       end
     end
-
   end
 
   describe "profile page" do
-    let(:user) { FactoryGirl.create(:user) }
-    let(:m1)   { FactoryGirl.create(:micropost, user: user, content: "Foo") }
-    let(:m2)   { FactoryGirl.create(:micropost, user: user, content: "Bar") }
+    let (:user) { FactoryGirl.create(:user) }
+    let!(:m1)   { FactoryGirl.create(:micropost, user: user, content: "Foo") }
+    let!(:m2)   { FactoryGirl.create(:micropost, user: user, content: "Bar") }
     before { visit user_path(user) }
 
     it { should have_selector('h1',    text: user.name) }
