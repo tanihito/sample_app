@@ -48,7 +48,7 @@ describe "User pages" do
         let(:admin) { FactoryGirl.create(:admin) }
         let(:non_admin) { FactoryGirl.create(:user) }
         before { sign_in non_admin }
-        
+
         describe "submitting a DELETE request to the Users#destroy action" do
           before { delete user_path(user) }
           specify { response.should redirect_to(root_path) }
@@ -143,6 +143,34 @@ describe "User pages" do
     describe "with invalid information" do
       before { click_button "Save changes" }
       it { should have_content('error') }
+    end
+  end
+
+  describe "following/followers" do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:other_user) { FactoryGirl.create(:user) }
+    before { user.follow!(other_user) }
+
+    describe "followed users" do
+      before do
+        sign_in user
+        visit following_user_path(user)
+      end
+
+      it { should have_selector('title', text: full_title('Following')) }
+      it { should have_selector('h3', text: 'Following') }
+      it { should have_link(other_user.name, href: user_path(other_user)) }
+    end
+
+    describe "followers" do
+      before do
+        sign_in other_user
+        visit followers_user_path(other_user)
+      end
+
+      it { should have_selector('title', text: full_title('Followers')) }
+      it { should have_selector('h3', text: 'Followers') }
+      it { should have_link(user.name, href: user_path(user)) }
     end
   end
 end
